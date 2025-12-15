@@ -1,6 +1,6 @@
 some desktop configs...
 
-> Do note: This contains a lot of outdated config that may not correctly with recent software versions ( as old as 3 years ). I will be updating this repo over time.
+> Do note: This contains a lot of outdated config that may not work correctly with recent software versions ( as old as 3 years ). I will be updating this repo over time.
 
 # Information
 
