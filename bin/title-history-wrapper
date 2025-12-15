@@ -1,0 +1,38 @@
+#!/bin/bash
+
+SCRIPT_PATH="$HOME/.bin/title-history"
+MAX_RESTART_ATTEMPTS=3  # Maximum number of restart attempts after a crash
+RESTART_DELAY=5         # Delay in seconds between restart attempts
+
+restart_count=0
+
+# Notify that the script is starting
+#notify-send "Window Title Monitor" "Starting the title-history script..."
+
+while true; do
+    # Attempt to start the script
+    $SCRIPT_PATH &
+    SCRIPT_PID=$!
+
+    # Wait for the script to finish
+    wait $SCRIPT_PID
+    exit_status=$?
+
+    # Check if the script crashed
+    if [ $exit_status -ne 0 ]; then
+        notify-send -i dialog-warning "Window Title Monitor Crashed" "Attempting to restart..."
+        ((restart_count++))
+        
+        # Check if the restart attempts exceed the maximum allowed
+        if [ $restart_count -ge $MAX_RESTART_ATTEMPTS ]; then
+            notify-send -i dialog-error "Window Title Monitor Error" "Script failed after multiple restart attempts. Check the script."
+            break
+        fi
+
+        sleep $RESTART_DELAY  # Wait before attempting to restart
+    else
+        # If the script stopped normally, notify and exit
+        notify-send "Window Title Monitor Stopped" "Script ended normally."
+        break
+    fi
+done

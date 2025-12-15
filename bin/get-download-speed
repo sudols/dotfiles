@@ -1,0 +1,27 @@
+#! /bin/dash
+
+print_bytes() {
+    num=$1
+
+    if [ "$num" -lt 1048576 ]; then
+        # If less than 1 MiB
+        bytes="$(echo "scale=2; $num / 1024" | bc -l | awk '{printf "%.2f\n", $0}') K" #KB/s"
+
+    elif [ "$num" -lt 1073741824 ]; then
+        # If less than 1 GiB
+        bytes="$(echo "scale=2; $num / 1048576" | bc -l | awk '{printf "%.2f\n", $0}') M" #MB/s"
+    else
+        # If greater than or equal to 1 GiB
+        bytes="$(echo "scale=2; $num / 1073741824" | bc -l | awk '{printf "%.2f\n", $0}') G" #GB/s"
+    fi
+
+    echo "$bytes"
+
+}
+rx_past=$(cat /sys/class/net/wlp13s0/statistics/rx_bytes || cat /sys/class/net/wlan0/statistics/rx_bytes)
+sleep 1
+rx_now=$(cat /sys/class/net/wlp13s0/statistics/rx_bytes || cat /sys/class/net/wlan0/statistics/rx_bytes)
+
+down=$((rx_now - rx_past))
+
+print_bytes "$down"

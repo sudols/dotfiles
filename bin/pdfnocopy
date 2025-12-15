@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Check input
+if [ $# -ne 3 ]; then
+    echo "Usage: $0 input.pdf output.pdf dpi"
+    exit 1
+fi
+
+input_pdf=$1
+output_pdf=$2
+dpi=$3
+
+# Create temp directory
+tmpdir=$(mktemp -d)
+
+# Convert PDF to PNG images with specified dpi
+pdftoppm -r "$dpi" "$input_pdf" "$tmpdir/page" -png
+
+# Convert PNG images back to PDF
+convert "$tmpdir/page-*.png" "$output_pdf"
+
+# Cleanup
+echo "Cleaning up temporary files..."
+rm -r "$tmpdir"
+
+# Done
+echo "Converted $input_pdf to images at $dpi dpi and then back to $output_pdf"

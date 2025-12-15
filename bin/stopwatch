@@ -1,0 +1,25 @@
+#!/bin/bash
+
+echo "Stopwatch started. Press Ctrl+C to stop."
+
+# Function to display the elapsed time
+display_time() {
+    local sec=$1
+    local min=$((sec / 60))
+    sec=$((sec % 60))
+    local hr=$((min / 60))
+    min=$((min % 60))
+    printf "%02d:%02d:%02d\n" $hr $min $sec
+}
+
+# Trap Ctrl+C to stop the stopwatch
+trap 'echo -e "\nStopwatch stopped. Elapsed time: $(display_time $SECONDS)"; exit' INT
+
+# Start the stopwatch
+SECONDS=0
+
+# Loop to update the display every second
+while true; do
+    echo -ne "\r$(display_time $SECONDS)"
+    sleep 1
+done

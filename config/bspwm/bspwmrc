@@ -1,0 +1,48 @@
+#!/usr/bin/bash
+
+# assign workspaces
+bspc monitor -d  ws1 ws2 ws3 ws4 ws5 ws6
+
+# gaps between windows
+bspc config window_gap 4
+bspc config border_width 0
+
+# enable cursor
+xsetroot -cursor_name left_ptr &
+
+killall -9 copyq dunst eww activate-linux flameshot picom sxhkd title-history title-history-wrapper find-keyboard-event
+sudo /usr/bin/pkill kmonad
+
+# polkit agent
+if [[ ! $(pidof xfce-polkit) ]]; then
+  /usr/libexec/xfce-polkit &
+fi
+
+feh --no-fehbg --bg-fill --randomize "$HOME/media/pics/wallpaper-bspwm/"
+
+# start essential applications
+
+dunst &
+flameshot &
+activate-linux -x 320 -y 100 -d &
+pgrep -x sxhkd > /dev/null || sxhkd &
+copyq --start-server
+
+picom -b
+/home/ark/.local/bin/eww open bar -c $HOME/.config/eww/
+
+notify-send -i window_list "BSPWM restarted"
+
+# appear as tiled when launched
+bspc rule -a pavucontrol-qt:pavucontrol-qt state=tiled
+
+
+#xinput --set-prop 10 'libinput Accel Speed' -0.9 
+notify-mouse-sensi
+
+title-history-wrapper &
+lxpolkit &
+
+find-keyboard-event &
+sleep 2
+sudo /home/ark/.local/bin/kmonad /home/ark/.config/kmonad/keyboard.conf &

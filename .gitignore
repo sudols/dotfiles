@@ -1,0 +1,14 @@
+# Backup directory
+.dotfiles.bak/
+
+# Sensitive data patterns
+**/fish_variables
+**/*password*
+**/*secret*
+**/*token*
+**/.env
+**/.env.*
+**/credentials
+
+# Potential sensitive files
+config/fish/fish_history

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+STATE_FILE="$HOME/.config/sxhkd/vim_mode_state"
+
+# Check the current state
+if [[ -f "$STATE_FILE" ]]; then
+  rm "$STATE_FILE"
+  notify-send "Vim Mode" "Deactivated"
+else
+  touch "$STATE_FILE"
+  notify-send "Vim Mode" "Activated"
+fi

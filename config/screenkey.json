@@ -1,0 +1,32 @@
+{
+    "no_systray": false,
+    "timeout": 3.0,
+    "recent_thr": 0.1,
+    "compr_cnt": 2,
+    "ignore": [],
+    "position": "fixed",
+    "persist": true,
+    "window": null,
+    "font_desc": "Hack Nerd Font 10",
+    "font_size": "medium",
+    "font_color": "white",
+    "bg_color": "black",
+    "opacity": 0.1,
+    "key_mode": "translated",
+    "bak_mode": "full",
+    "mods_mode": "win",
+    "mods_only": false,
+    "multiline": false,
+    "vis_shift": true,
+    "vis_space": false,
+    "geometry": [
+        1605,
+        1201,
+        923,
+        218
+    ],
+    "screen": 0,
+    "start_disabled": false,
+    "mouse": true,
+    "button_hide_duration": 1.0
+}

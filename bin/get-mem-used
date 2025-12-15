@@ -1,0 +1,19 @@
+#!/bin/bash
+
+memory=$(free -b | grep "Mem:" | awk '{print $3}')
+
+if [ "$memory" -ge 1073741824 ]; then
+    # if atleast 1 GiB
+    memory=$(echo "scale=2; $memory/1073741824" | bc)
+    units="GiB"
+elif [ "$memory" -ge 1048576 ]; then
+    # if atleast 1 MiB
+    memory=$(echo "scale=2; $memory/1048576" | bc)
+    units="MiB"
+else
+    # if lessthan 1MiB
+    memory=$(echo "scale=2; $memory/1024" | bc)
+    units="KiB"
+fi
+
+echo "$memory $units"

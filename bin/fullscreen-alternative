@@ -1,0 +1,10 @@
+#! /bin/dash
+get_gap=$(bspc config window_gap)
+
+if [ "${get_gap}" = "0" ]; then
+    bspc config window_gap 2
+    #echo '2'
+else
+    bspc config window_gap 0
+    #echo '0'
+fi

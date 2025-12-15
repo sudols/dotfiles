@@ -1,0 +1,41 @@
+#!/bin/bash
+
+output_file="$HOME/.bspwm-history/current_window_title"
+last_reset_file="$HOME/.bspwm-history/last_window_title_reset"
+last_title=""
+
+notify-send "Window Title Monitor" "Script started successfully"
+
+reset_interval=$((48 * 3600))  # 48 hours in seconds
+
+# Function to get or set the last reset time
+get_set_last_reset() {
+    if [ ! -f "$last_reset_file" ]; then
+        echo $(date +%s) > "$last_reset_file"
+    fi
+    cat "$last_reset_file"
+}
+
+last_reset=$(get_set_last_reset)
+
+while true; do
+    current_time=$(date +%s)
+    
+    # Check if it's time to reset the file
+    if [ $((current_time - last_reset)) -ge $reset_interval ]; then
+        echo "" > "$output_file"
+        echo $current_time > "$last_reset_file"
+        last_reset=$current_time
+        echo "File reset at $(date)"
+    fi
+
+    current_title=$($HOME/.config/eww/scripts/getWinTitle)
+    
+    if [ "$current_title" != "$last_title" ]; then
+        timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+        echo "[$timestamp] $current_title" >> "$output_file"
+        last_title="$current_title"
+    fi
+    sleep 0.5
+done
+

@@ -1,0 +1,40 @@
+#!/bin/bash
+
+device_address="44:42:01:5F:83:FD"
+
+# Check if Bluetooth is enabled
+if ! bluetoothctl show | grep -q "Powered: yes"; then
+    notify-send "Bluetooth is not enabled. Enabling..."
+    bluetoothctl power on
+fi
+
+# If already connected, just notify and exit
+if bluetoothctl info "$device_address" | grep -q "Connected: yes"; then
+    notify-send "Device is already connected."
+    exit 0
+fi
+
+# Run connection logic via nohup in background
+nohup bash -c "
+    notify-send 'Attempting to connect to the device...'
+    bluetoothctl connect '$device_address'
+
+    max_attempts=10
+    attempt=0
+    connected=false
+
+    while [ \$attempt -lt \$max_attempts ]; do
+        sleep 1
+        if bluetoothctl info '$device_address' | grep -q 'Connected: yes'; then
+            connected=true
+            break
+        fi
+        attempt=\$((attempt + 1))
+    done
+
+    if [ \"\$connected\" = true ]; then
+        notify-send 'Connected to the device.'
+    else
+        notify-send 'Failed to connect to the device.' -u critical
+    fi
+" >/dev/null 2>&1 &

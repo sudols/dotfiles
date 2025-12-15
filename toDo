@@ -1,0 +1,14 @@
+1. add deploy.sh script to quickly install necessary packages and depoly dotfiles over a clean deb-insatll
+
+
+
+
+
+
+https://github.com/phocus/ 
+	\ gtk repo for debugging stuff
+	\ gtk theme debugging + nice gtk 3 theme (gtk 2, 4 not available :C )
+
+
+rofi alterinative - https://albertlauncher.github.io/using/ 
+inxi - sys info script

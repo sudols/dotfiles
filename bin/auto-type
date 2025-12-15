@@ -1,0 +1,131 @@
+#! /bin/env python3
+#import pyperclip, pyautogui
+#import time
+#
+#time.sleep(3)
+#for i in pyperclip.paste().split("\n"):
+#    for j in i:
+#        pyautogui.write(j)
+#        if j in ["[", '"', "'", "("]:
+#            pyautogui.press("delete")
+#    pyautogui.press(["enter", "home"]) 
+#
+import pyperclip
+import pyautogui
+import time
+
+# Wait for 5 seconds to allow you to focus on the input area
+time.sleep(5)
+
+# Get the text from the clipboard
+clipboard_text = pyperclip.paste()
+
+# Split the text into lines
+lines = clipboard_text.split("\n")
+
+# Type each line with proper indentation
+for line in lines:
+    # Replace spaces with tabs for indentation
+    line = line.replace("    ", "\t")  # Replace 4 spaces with a tab
+    pyautogui.write(line)  # Type the line
+    pyautogui.press("enter")  # Press Enter to move to the next line
+#
+
+
+#import pyperclip
+#import pyautogui
+#import time
+#
+#def strip_indentation(lines):
+#    """Remove common leading whitespace from all lines."""
+#    if not lines:
+#        return []
+#    # Find lines that are not empty
+#    non_empty = [line for line in lines if line.strip()]
+#    if not non_empty:
+#        return lines
+#    # Find the minimum indentation
+#    min_indent = min(len(line) - len(line.lstrip()) for line in non_empty)
+#    # Remove the common indentation from all lines
+#    return [line[min_indent:] if line.strip() else line for line in lines]
+#
+#def check_escape():
+#    """Check if escape key is pressed using pyautogui."""
+#    try:
+#        return pyautogui.position() == (0, 0)  # Move mouse to top-left corner to stop
+#    except:
+#        return False
+#
+#def type_code():
+#    # Wait for initial delay
+#    print("Starting in 5 seconds... Move your cursor to the target editor.")
+#    print("To stop typing, quickly move your mouse to the top-left corner of the screen")
+#    time.sleep(5)
+#    
+#    # Get clipboard content
+#    text = pyperclip.paste()
+#    lines = text.split('\n')
+#    
+#    # Remove common indentation
+#    lines = strip_indentation(lines)
+#    
+#    # Typing speed (adjust as needed)
+#    typing_delay = 0.01  # Delay between characters
+#    line_delay = 0.1    # Delay between lines
+#    
+#    print("Started typing. Move mouse to top-left corner to stop.")
+#    
+#    try:
+#        for line in lines:
+#            # Check for stop condition
+#            if check_escape():
+#                print("\nStopped by user")
+#                break
+#                
+#            # Type each character individually
+#            for char in line:
+#                if check_escape():
+#                    print("\nStopped by user")
+#                    return
+#                pyautogui.write(char)
+#                time.sleep(typing_delay)
+#            
+#            # Handle empty lines differently
+#            if line.strip():
+#                pyautogui.press('enter')
+#                time.sleep(line_delay)
+#            else:
+#                # For empty lines, just press enter without additional delay
+#                pyautogui.press('enter')
+#
+#    except KeyboardInterrupt:
+#        print("\nStopped by user")
+#
+#if __name__ == "__main__":
+#    # Add a safety prompt
+#    input("Press Enter to start the auto-typer (make sure you have copied your code first)")
+#    type_code()
+
+
+#
+#import pyperclip
+#import pyautogui
+#import time
+#
+## Wait for 5 seconds to allow you to focus on the input area
+#time.sleep(5)
+#
+## Get the text from the clipboard
+#clipboard_text = pyperclip.paste()
+#
+## Split the text into lines
+#lines = clipboard_text.split("\n")
+#
+## Type each line manually
+#for line in lines:
+#    # Replace spaces with tabs for indentation
+#    line = line.replace("    ", "\t")  # Replace 4 spaces with a tab
+#    pyautogui.write(line)  # Type the line
+#    pyautogui.press("enter")  # Press Enter to move to the next line
+#    time.sleep(0.05)  # Small delay to let the editor process
+#    pyautogui.press("backspace")  # Remove any unwanted auto-inserted characters

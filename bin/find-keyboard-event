@@ -1,0 +1,46 @@
+#!/bin/bash
+
+## Find the event file linked to the reddragon keyboard, which is fed to kmonad
+CONFIG_FILE="/home/ark/.config/kmonad/keyboard.conf"
+NOTIFY_TITLE="Kmonad Config Update"
+
+update_config() {
+    # Find the event file linked to the keyboard
+    event_path=$(readlink -f /dev/input/by-id/usb-BY_Tech_Gaming_Keyboard-event-kbd)
+
+    if [[ -z "$event_path" ]]; then
+        notify-send "$NOTIFY_TITLE" "Keyboard event file not found."
+        return
+    fi
+
+    event_file=$(basename "$event_path")
+    event_number=$(echo "$event_file" | grep -oE '[0-9]+$')
+
+    if [[ -z "$event_number" ]]; then
+        notify-send "$NOTIFY_TITLE" "Failed to extract event number."
+        return
+    fi
+
+    # Extract the current event number from the config file
+    current_event=$(grep -oE '/dev/input/event[0-9]+' "$CONFIG_FILE" | grep -oE '[0-9]+$')
+
+    if [[ "$current_event" == "$event_number" ]]; then
+        notify-send "$NOTIFY_TITLE" "No change needed. Config already set to event$event_number."
+        return
+    fi
+
+    # Modify line 3 in the config file
+    sed -i "3s|input  (device-file \"/dev/input/event[0-9]\\+\")|input  (device-file \"/dev/input/event$event_number\")|" "$CONFIG_FILE"
+
+    notify-send "$NOTIFY_TITLE" "Updated config to use /dev/input/event$event_number"
+
+    # Reload bspwm config if needed
+}
+
+# Initial update
+update_config
+
+# Watch for changes and update dynamically
+while inotifywait -e create,delete,move /dev/input/by-id/; do
+    update_config
+done

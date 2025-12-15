@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Check if the weight argument is provided
+if [ -z "$1" ]; then
+    echo "Usage: weight <weight> (e.g., weight 75.4 kg)"
+    exit 1
+fi
+
+# Get the current date
+current_date=$(date +%Y-%m-%d)
+
+# Create the data directory if it doesn't exist
+data_dir="$HOME/desk/weight"
+mkdir -p "$data_dir"
+
+# Get the weight value and units
+weight_value=$(echo "$1" | sed 's/\([0-9]*\.[0-9]*\).*/\1/')
+
+# Create the data file if it doesn't exist
+data_file="$data_dir/weight.txt"
+touch "$data_file"
+
+# Append the new entry to the data file
+echo "$current_date $weight_value" >> "$data_file"
+
+echo "Weight recorded: $current_date $1"
+
+# Print the last 5 days of weight
+echo ""
+echo "Last 5 days of weight:"
+tail -n 5 "$data_file"

@@ -1,0 +1,11 @@
+#! /bin/dash
+
+get_padding=$(bspc config top_padding)
+
+if [ "${get_padding}" = "0" ]; then
+    bspc config top_padding 52
+    #echo '41'
+else
+    bspc config top_padding 0
+    #echo '0'
+fi

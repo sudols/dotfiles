@@ -1,0 +1,71 @@
+#!/bin/dash
+# TODO: call $("amixer -D pulse set Master 1+ toggle") if $("amixer -D pulse set Master 2%-") = 0
+
+# You can call this script like this:
+# $./notifu-volume up
+# $./notify-volume down
+# $./notify-volume mute
+
+DIR="$HOME/.config/dunst"
+
+get_volume() {
+  amixer -D pulse get Master | grep '%' | head -n 1 | awk -F'[' '{print $2}' | awk -F'%' '{print $1}'
+}
+
+is_mute() {
+  amixer -D pulse get Master | grep '%' | grep -oE '[^ ]+$' | grep off >/dev/null
+}
+
+send_notification() {
+  volume=$(get_volume)
+  if [ "$volume" = "0" ]; then
+    icon_name="$DIR/icons/volume-muted.svg"
+  else
+    if [ "$volume" -lt "10" ]; then
+      icon_name="$DIR/icons/volume-low.svg"
+    else
+      if [ "$volume" -lt "30" ]; then
+        icon_name="$DIR/icons/volume-low.svg"
+      else
+        if [ "$volume" -lt "70" ]; then
+          icon_name="$DIR/icons/volume-medium.svg"
+        else
+          icon_name="$DIR/icons/volume-high.svg"
+        fi
+      fi
+    fi
+  fi
+  # Send the notification
+  # dunstify " Volume " "$bar" -i $icon_name -r 5555 -u normal
+  dunstify "Volume $volume% " -i "$icon_name" -r 5555 -u normal -h int:value:$(($volume))
+  # notify-send.sh "Volume : $volume" -i "$icon_name" -t 2000 --replace=555
+}
+
+case $1 in
+up)
+  # Unmute
+  amixer -D pulse set Master on >/dev/null
+  # +5%
+  #pactl set-sink-volume 12 +2\%
+  amixer set Master 2\%+
+  send_notification
+  ;;
+down)
+  # Unmute
+  amixer -D pulse set Master on >/dev/null
+  # -5%
+  #pactl set-sink-volume 12 -2\%
+  amixer set Master 2\%-
+  send_notification
+  ;;
+mute)
+  # Toggle mute
+  amixer -D pulse set Master 1+ toggle >/dev/null
+  if is_mute; then
+    icon_name="$DIR/icons/volume-muted.svg"
+    dunstify "Mute" -i "$icon_name" -r 5555 -u normal -h int:value:0
+  else
+    send_notification
+  fi
+  ;;
+esac

@@ -1,0 +1,10 @@
+#! /bin/dash
+while true; do
+    bat_status="$(cat /sys/class/power_supply/BAT1/status)"
+    bat_cap="$(cat /sys/class/power_supply/BAT1/capacity)"
+    if [ "$bat_cap" -le 20 ] && [ "$bat_status" = "Discharging" ]; then
+        notify-send -u critical "Battery Low"
+    fi
+
+    sleep 10
+done

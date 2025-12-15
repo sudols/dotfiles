@@ -1,0 +1,17 @@
+#!/bin/bash
+# notifies current sensitivity of mouse as set via xinput
+command="xinput list-props 13 | grep 'libinput Accel Speed (328)'"
+output=$(eval "$command" 2>&1)
+exit_status=$?
+
+if [ $exit_status -eq 0 ]; then
+    # Split the output into lines
+    IFS=$'\n' read -rd '' -a lines <<<"$output"
+
+    # Display each line as a separate notification
+    for line in "${lines[@]}"; do
+        dunstify -a "Command Output" "$line"
+    done
+else
+    dunstify -a "Mouse:" "Error executing command: $command"
+fi

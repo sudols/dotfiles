@@ -1,0 +1,222 @@
+# Expand/contract a window by moving one of its side outward/inward
+#super + s : {h,j,k,l}
+#    STEP=20; SELECTION={1,2,3,4}; \
+#    bspc node -z $(echo "left -$STEP 0,bottom 0 $STEP,top 0 -$STEP,right $STEP 0" | cut -d',' -f$SELECTION) || \
+#    bspc node -z $(echo "right -$STEP 0,top 0 $STEP,bottom 0 -$STEP,left $STEP 0" | cut -d',' -f$SELECTION)
+
+
+
+# get keynames with 
+#xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
+#super + d
+#  killall dunst; notify-send "title" "body here"
+# Toggle Vim mode
+#Menu
+#    toggle
+
+# Vim mode keybindings
+#alt + {h,j,k,l}
+#    fish -c 'if test -f /home/ark/.bin/toggle; bspc node -f {west,south,north,east}; end'
+#
+## Normal mode keybindings (optional)
+#alt + {h,j,k,l}
+#  fish -c 'if not test -f  /home/ark/.bin/toggle; bspc node -f {west,south,north,east}; end'
+
+#
+# wm independent hotkeys
+#
+# emoji picker
+super + e
+  emoji-picker
+
+# reload sxhkd config
+super + Escape
+  pkill -USR1 -x sxhkd && dunstify --replace=69 -i keyboard "Restarted SXHKD"
+
+
+# Launch Terminal
+super + r
+  st
+
+super + Return 
+  st
+super + shift + Return
+  kitty
+super + ctrl + shift + Return
+  alacritty
+
+# draw floating terminal
+super + x
+  draw-terminal
+  #slop --nodecorations --highlight --tolerance=0 --color=0.3,0.4,0.6,0.6 -f ""
+
+# Launch Menus
+super + m
+  exec rofi -show drun
+  #exec rofi -drun-use-desktop-cache -show drun
+
+# resize top for fullscreen
+super + k
+	toggle-eww-bar
+
+#fullsceen toggle
+super + f
+	bspc node -t \~fullscreen
+super + shift + f
+  fullscreen-alternative
+
+
+# lock screen
+super + l
+  betterlockscreen --lock blur
+
+super + shift + l
+  notify-send -i "/home/ark/.config/dunst/icons/clock-regular.svg" "Going to sleep"; sleep 2; betterlockscreen -l blur & sleep 0.5 && systemctl suspend
+
+
+
+# launch browsers
+super + w
+  notify-send 'launching firefox'; firefox-dev
+super + shift + w
+  notify-send 'launching firefox-private'; firefox-dev --private-window
+super + ctrl + w
+  notify-send 'launching chromium'; chromium
+
+# Randomize wallpaper
+# super + shift + w
+#   {feh --no-fehbg --bg-fill --randomize "$HOME/Pictures/Wallpapers/"}
+
+# volume controls
+XF86Audio{RaiseVolume,LowerVolume}
+  notify-volume {up,down}
+#pactl set-sink-volume 0 {+2%,-2%}
+
+XF86AudioMute
+  notify-volume mute
+#pactl set-sink-mute 0 toggle
+
+# play pause stuff
+  #xdotool search --class mpv key --window %@ p
+XF86AudioPlay
+  playerctl play-pause
+
+XF86AudioPrev
+	playerctl previous
+
+XF86AudioNext
+	playerctl next
+
+# brightness controls
+XF86MonBrightness{Up,Down}
+  notify-brightness {up,down}
+
+# screenshot gui
+Print
+  flameshot gui
+
+# color picker
+super + c
+  color-picker
+
+
+#
+# BSPWM HOTKEYS
+#
+
+# switch workspace OR move a window to another wrokspace
+super + {_,shift + }{1-6}
+      bspc {desktop -f,node -d} '^{1-9}' #--follow
+
+# Quit/Restart bspwm
+super + shift + r
+  eval $HOME/.config/bspwm/bspwmrc
+  #bspc wm -r
+
+
+# Close and kill
+super + {q,Delete}
+  {xdo close,xdo close}
+
+# Alternate between the tiled and monocle layout
+super + space
+  bspc node -t "~"floating
+
+# Swap the current node and the biggest (locally) window 
+#super + s
+#	bspc node -s biggest.local.window
+
+#
+# state/flags
+#
+
+# hide focused window ( can hide only 1 window per workspace )
+super + ctrl + space
+	hide-focused-window
+
+# Make window sticky
+super + shift + equal
+  bspc node -g {sticky=on} -l above
+
+# Make window sticky even in fullscreen
+super + equal
+ { bspc node -t {floating, tiled}; bspc node -l {above, normal}
+
+
+# focus next window
+alt + Tab
+	bspc node -f {next}.local.!hidden.window
+
+# focus last desktop
+super + Tab
+	bspc desktop -f last
+#
+# focus/swap
+#
+
+# change window direction
+super + {_,shift + }{h,j,k,l}
+	bspc node -{f,s} {west,south,north,east}
+
+# Rotate windows
+super + {r,KP_Divide}        
+  bspc node @/ -R {90,90}
+
+
+#
+# move/resize
+#
+
+# Expanding windows
+super + ctrl + {h,j,k,l}
+  bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0} --balanced
+
+# Shrinking windows
+super + alt + {l,k,j,h}
+  bspc node -z {left 20 0,bottom 0 -20,top 0 20,right -20 0}
+
+# Move a floating window
+super + ctrl + shift + {h,j,k,l}
+	bspc node -v {-20 0,0 20,0 -20,20 0}
+
+
+#
+# preselection
+#
+
+# Preselect the direction
+#super + {KP_Left,KP_Begin,KP_Up,KP_Right}
+#	bspc node -p {west,south,north,east}
+
+# Preselect the ratio
+#super + ctrl + {1-9}
+#	bspc node -o 0.{1-9}
+
+# Cancel the preselection for the focused node
+#super + BackSpace
+#	bspc node -p cancel
+
+# Cancel the preselection for the focused desktop
+#super + ctrl + shift + space
+#	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+
